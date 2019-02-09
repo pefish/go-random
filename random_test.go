@@ -1,9 +1,10 @@
 package p_random
 
 import (
+	"fmt"
 	"testing"
 )
 
-func TestRandomClass_Test(t *testing.T) {
-
+func TestRandomClass_GetUniqueIdString(t *testing.T) {
+	fmt.Println(Random.GetUniqueIdString())
 }
