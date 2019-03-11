@@ -1,4 +1,4 @@
-module gitee.com/pefish/p-go-random
+module github.com/pefish/go-random
 
 require (
 	github.com/kr/pretty v0.1.0 // indirect
