@@ -1,4 +1,4 @@
-package p_random
+package go_random
 
 import (
 	"errors"
@@ -90,4 +90,9 @@ func (this *RandomClass) GetRandomNumberStr(count int32) string {
 	}
 
 	return string(b)
+}
+
+func (this *RandomClass) Test() string {
+	fmt.Println(rand.New(rand.NewSource(12)).Intn(2))
+	return `11`
 }
