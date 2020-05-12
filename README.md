@@ -1,4 +1,4 @@
-# p-go-random
+# go-random
 
 #### Description
 random tools
