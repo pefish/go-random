@@ -13,44 +13,68 @@ type RandomClass struct {
 
 var Random = RandomClass{}
 
-func (this *RandomClass) GetUniqueIdBytes() [16]byte {
+func (randomInstance *RandomClass) GetUniqueIdBytes() [16]byte {
 	return uuid.NewV4()
 }
 
-func (this *RandomClass) GetUniqueIdString() string {
+func (randomInstance *RandomClass) GetUniqueIdString() string {
 	return fmt.Sprintf(`%s`, uuid.NewV4())
 }
 
-func (this *RandomClass) RandomFromStringSlice(slice []string) string {
+func (randomInstance *RandomClass) RandomFromStringSlice(slice []string) string {
 	rand.Seed(time.Now().UnixNano())
 	return slice[rand.Intn(len(slice))]
 }
 
-func (this *RandomClass) RandomInt(start int, end int) int {
-	rand.Seed(time.Now().UnixNano())
-	if end < start {
-		panic(errors.New(`end must gte start`))
+func (randomInstance *RandomClass) MustRandomInt(start int, end int) int {
+	re, err := randomInstance.RandomInt(start, end)
+	if err != nil {
+		panic(err)
 	}
-	return rand.Intn(end-start) + start
+	return re
 }
 
-func (this *RandomClass) RandomInt64(start int64, end int64) int64 {
+func (randomInstance *RandomClass) RandomInt(start int, end int) (int, error) {
 	rand.Seed(time.Now().UnixNano())
 	if end < start {
-		panic(errors.New(`end must gte start`))
+		return 0, errors.New(`end must gte start`)
 	}
-	return rand.Int63n(end-start) + start
+	return rand.Intn(end-start) + start, nil
 }
 
-func (this *RandomClass) RandomDuration(start int64, end int64) time.Duration {
+func (randomInstance *RandomClass) MustRandomInt64(start int64, end int64) int64 {
+	re, err := randomInstance.RandomInt64(start, end)
+	if err != nil {
+		panic(err)
+	}
+	return re
+}
+
+func (randomInstance *RandomClass) RandomInt64(start int64, end int64) (int64, error) {
 	rand.Seed(time.Now().UnixNano())
 	if end < start {
-		panic(errors.New(`end must gte start`))
+		return 0, errors.New(`end must gte start`)
 	}
-	return time.Duration(rand.Int63n(end-start) + start)
+	return rand.Int63n(end-start) + start, nil
 }
 
-func (this *RandomClass) GetRandomString(count int32) string {
+func (randomInstance *RandomClass) MustRandomDuration(start int64, end int64) time.Duration {
+	re, err := randomInstance.RandomDuration(start, end)
+	if err != nil {
+		panic(err)
+	}
+	return re
+}
+
+func (randomInstance *RandomClass) RandomDuration(start int64, end int64) (time.Duration, error) {
+	rand.Seed(time.Now().UnixNano())
+	if end < start {
+		return 0, errors.New(`end must gte start`)
+	}
+	return time.Duration(rand.Int63n(end-start) + start), nil
+}
+
+func (randomInstance *RandomClass) GetRandomString(count int32) string {
 	dictionary := "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	b := make([]byte, count)
 	l := len(dictionary)
@@ -71,7 +95,7 @@ func (this *RandomClass) GetRandomString(count int32) string {
 	return string(b)
 }
 
-func (this *RandomClass) GetRandomNumberStr(count int32) string {
+func (randomInstance *RandomClass) GetRandomNumberStr(count int32) string {
 	dictionary := "0123456789"
 	b := make([]byte, count)
 	l := len(dictionary)
@@ -90,9 +114,4 @@ func (this *RandomClass) GetRandomNumberStr(count int32) string {
 	}
 
 	return string(b)
-}
-
-func (this *RandomClass) Test() string {
-	fmt.Println(rand.New(rand.NewSource(12)).Intn(2))
-	return `11`
 }
