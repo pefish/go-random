@@ -2,47 +2,21 @@ package go_random
 
 import (
 	"errors"
-	"fmt"
-	"github.com/satori/go.uuid"
 	"math/rand"
 	"time"
 )
 
-type RandomClass struct {
+type Random struct {
 }
 
-var Random = RandomClass{}
+var RandomInstance = Random{}
 
-func (randomInstance *RandomClass) GetUniqueIdBytes() [16]byte {
-	return uuid.NewV4()
-}
-
-func (randomInstance *RandomClass) GetUniqueIdString() string {
-	return fmt.Sprintf(`%s`, uuid.NewV4())
-}
-
-func (randomInstance *RandomClass) RandomFromStringSlice(slice []string) string {
+func (randomInstance *Random) RandomFromStringSlice(slice []string) string {
 	rand.Seed(time.Now().UnixNano())
 	return slice[rand.Intn(len(slice))]
 }
 
-func (randomInstance *RandomClass) MustRandomInt(start int, end int) int {
-	re, err := randomInstance.RandomInt(start, end)
-	if err != nil {
-		panic(err)
-	}
-	return re
-}
-
-func (randomInstance *RandomClass) RandomInt(start int, end int) (int, error) {
-	rand.Seed(time.Now().UnixNano())
-	if end < start {
-		return 0, errors.New(`end must gte start`)
-	}
-	return rand.Intn(end-start) + start, nil
-}
-
-func (randomInstance *RandomClass) MustRandomInt64(start int64, end int64) int64 {
+func (randomInstance *Random) MustRandomInt64(start int64, end int64) int64 {
 	re, err := randomInstance.RandomInt64(start, end)
 	if err != nil {
 		panic(err)
@@ -50,7 +24,7 @@ func (randomInstance *RandomClass) MustRandomInt64(start int64, end int64) int64
 	return re
 }
 
-func (randomInstance *RandomClass) RandomInt64(start int64, end int64) (int64, error) {
+func (randomInstance *Random) RandomInt64(start int64, end int64) (int64, error) {
 	rand.Seed(time.Now().UnixNano())
 	if end < start {
 		return 0, errors.New(`end must gte start`)
@@ -58,60 +32,62 @@ func (randomInstance *RandomClass) RandomInt64(start int64, end int64) (int64, e
 	return rand.Int63n(end-start) + start, nil
 }
 
-func (randomInstance *RandomClass) MustRandomDuration(start int64, end int64) time.Duration {
-	re, err := randomInstance.RandomDuration(start, end)
+func (randomInstance *Random) MustRandomString(count int32) string {
+	result, err := randomInstance.RandomString(count)
 	if err != nil {
 		panic(err)
 	}
-	return re
+	return result
 }
 
-func (randomInstance *RandomClass) RandomDuration(start int64, end int64) (time.Duration, error) {
-	rand.Seed(time.Now().UnixNano())
-	if end < start {
-		return 0, errors.New(`end must gte start`)
-	}
-	return time.Duration(rand.Int63n(end-start) + start), nil
+func (randomInstance *Random) RandomString(count int32) (string, error) {
+	return randomInstance.RandomStringFromDic("_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", count)
 }
 
-func (randomInstance *RandomClass) GetRandomString(count int32) string {
-	dictionary := "_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+func (randomInstance *Random) RandomStringFromDic(dictionary string, count int32) (string, error) {
 	b := make([]byte, count)
 	l := len(dictionary)
 
-	_, err := rand.Read(b)
+	_, err := rand.New(rand.NewSource(time.Now().UnixNano())).Read(b)
 
 	if err != nil {
-		rand.Seed(time.Now().UnixNano())
-		for i := range b {
-			b[i] = dictionary[rand.Int()%l]
-		}
-	} else {
-		for i, v := range b {
-			b[i] = dictionary[v%byte(l)]
-		}
+		return "", err
+	}
+	for i, v := range b {
+		b[i] = dictionary[v%byte(l)]
 	}
 
-	return string(b)
+	return string(b), nil
 }
 
-func (randomInstance *RandomClass) GetRandomNumberStr(count int32) string {
-	dictionary := "0123456789"
-	b := make([]byte, count)
-	l := len(dictionary)
+func (randomInstance *Random) MustRandomBytes(count int32) []byte {
+	result, err := randomInstance.RandomBytes(count)
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
 
-	_, err := rand.Read(b)
+func (randomInstance *Random) RandomBytes(count int32) ([]byte, error) {
+	b := make([]byte, count)
+
+	_, err := rand.New(rand.NewSource(time.Now().UnixNano())).Read(b)
 
 	if err != nil {
-		rand.Seed(time.Now().UnixNano())
-		for i := range b {
-			b[i] = dictionary[rand.Int()%l]
-		}
-	} else {
-		for i, v := range b {
-			b[i] = dictionary[v%byte(l)]
-		}
+		return nil, err
 	}
 
-	return string(b)
+	return b, nil
+}
+
+func (randomInstance *Random) RandomNumberStr(count int32) (string, error) {
+	return randomInstance.RandomStringFromDic("0123456789", count)
+}
+
+func (randomInstance *Random) MustRandomNumberStr(count int32) string {
+	result, err := randomInstance.RandomNumberStr(count)
+	if err != nil {
+		panic(err)
+	}
+	return result
 }

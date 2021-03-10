@@ -5,10 +5,15 @@ import (
 	"testing"
 )
 
-func TestRandomClass_GetUniqueIdString(t *testing.T) {
-	fmt.Println(Random.GetUniqueIdString())
+
+func TestRandom_MustRandomString(t *testing.T) {
+	fmt.Println(RandomInstance.MustRandomString(16))
 }
 
-func TestRandomClass_Test(t *testing.T) {
-	fmt.Println(Random.Test())
+func TestRandom_MustRandomNumberStr(t *testing.T) {
+	fmt.Println(RandomInstance.MustRandomNumberStr(16))
+}
+
+func TestRandom_MustRandomBytes(t *testing.T) {
+	fmt.Println(RandomInstance.MustRandomBytes(16))
 }
