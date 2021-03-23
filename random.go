@@ -26,8 +26,8 @@ func (randomInstance *Random) MustRandomInt64(start int64, end int64) int64 {
 
 func (randomInstance *Random) RandomInt64(start int64, end int64) (int64, error) {
 	rand.Seed(time.Now().UnixNano())
-	if end < start {
-		return 0, errors.New(`end must gte start`)
+	if end <= start {
+		return 0, errors.New(`end must gt start`)
 	}
 	return rand.Int63n(end-start) + start, nil
 }
