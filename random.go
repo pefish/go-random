@@ -12,8 +12,8 @@ type Random struct {
 var RandomInstance = Random{}
 
 func (randomInstance *Random) RandomFromStringSlice(slice []string) string {
-	rand.Seed(time.Now().UnixNano())
-	return slice[rand.Intn(len(slice))]
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return slice[r.Intn(len(slice))]
 }
 
 func (randomInstance *Random) MustRandomInt64(start int64, end int64) int64 {
