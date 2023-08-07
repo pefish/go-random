@@ -25,11 +25,27 @@ func (randomInstance *Random) MustRandomInt64(start int64, end int64) int64 {
 }
 
 func (randomInstance *Random) RandomInt64(start int64, end int64) (int64, error) {
-	rand.Seed(time.Now().UnixNano())
+	randInstance := rand.New(rand.NewSource(time.Now().UnixNano()))
 	if end <= start {
 		return 0, errors.New(`end must gt start`)
 	}
-	return rand.Int63n(end-start) + start, nil
+	return randInstance.Int63n(end-start) + start, nil
+}
+
+func (randomInstance *Random) MustRandomFloat64(start float64, end float64) float64 {
+	result, err := randomInstance.RandomFloat64(start, end)
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+
+func (randomInstance *Random) RandomFloat64(start float64, end float64) (float64, error) {
+	randInstance := rand.New(rand.NewSource(time.Now().UnixNano()))
+	if end <= start {
+		return 0, errors.New(`end must gt start`)
+	}
+	return randInstance.Float64()*(end-start) + start, nil
 }
 
 func (randomInstance *Random) MustRandomString(count int32) string {
