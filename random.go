@@ -16,6 +16,22 @@ func (randomInstance *Random) RandomFromStringSlice(slice []string) string {
 	return slice[r.Intn(len(slice))]
 }
 
+func (randomInstance *Random) MustRandomInt(start int, end int) int {
+	re, err := randomInstance.RandomInt(start, end)
+	if err != nil {
+		panic(err)
+	}
+	return re
+}
+
+func (randomInstance *Random) RandomInt(start int, end int) (int, error) {
+	randInstance := rand.New(rand.NewSource(time.Now().UnixNano()))
+	if end <= start {
+		return 0, errors.New(`end must gt start`)
+	}
+	return randInstance.Intn(end-start) + start, nil
+}
+
 func (randomInstance *Random) MustRandomInt64(start int64, end int64) int64 {
 	re, err := randomInstance.RandomInt64(start, end)
 	if err != nil {
