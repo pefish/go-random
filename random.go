@@ -76,6 +76,14 @@ func (randomInstance *Random) RandomString(count int32) (string, error) {
 	return randomInstance.RandomStringFromDic("_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", count)
 }
 
+func (randomInstance *Random) MustRandomStringFromDic(dictionary string, count int32) string {
+	r, err := randomInstance.RandomStringFromDic(dictionary, count)
+	if err != nil {
+		panic(err)
+	}
+	return r
+}
+
 func (randomInstance *Random) RandomStringFromDic(dictionary string, count int32) (string, error) {
 	b := make([]byte, count)
 	l := len(dictionary)
