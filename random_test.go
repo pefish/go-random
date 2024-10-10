@@ -31,3 +31,8 @@ func TestRandomCountFromSlice(t *testing.T) {
 	}, 3)
 	fmt.Println(values)
 }
+
+func TestRandomCountInt(t *testing.T) {
+	values := RandomCountInt(0, 10, 5)
+	fmt.Println(values)
+}

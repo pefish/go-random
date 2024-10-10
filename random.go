@@ -13,6 +13,7 @@ func RandomFromSlice[T any](slice []T) (index int, value T) {
 	return
 }
 
+// 从数组中随机取出 count 个不重复的元素
 func RandomCountFromSlice[T any](slice []T, count int) []T {
 	newSlice := make([]T, len(slice))
 	copy(newSlice, slice)
@@ -33,10 +34,28 @@ func MustRandomInt(start int, end int) int {
 	return re
 }
 
+// 从 start 和 end 之间随机取出不重复的 count 个值
+func RandomCountInt(start int, end int, count int) []int {
+	map_ := make(map[int]int, 0)
+	for i := start; i < end; i++ {
+		map_[i] = i
+	}
+
+	results := make([]int, 0)
+	for _, v := range map_ {
+		if len(results) == count {
+			break
+		}
+		results = append(results, v)
+	}
+
+	return results
+}
+
 func RandomInt(start int, end int) (int, error) {
 	randInstance := rand.New(rand.NewSource(time.Now().UnixNano()))
 	if end <= start {
-		return 0, errors.New(`end must gt start`)
+		return 0, errors.New(`End must gt start`)
 	}
 	return randInstance.Intn(end-start) + start, nil
 }
